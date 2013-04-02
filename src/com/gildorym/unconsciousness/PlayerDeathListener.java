@@ -15,8 +15,10 @@ public class PlayerDeathListener implements Listener {
 
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent event) {
-		plugin.deathLocations.put(event.getEntity().getName().substring(0, Math.min(14, event.getEntity().getName().length())), event.getEntity().getLocation().getBlock().getLocation());
-		plugin.deathInventories.put(event.getEntity().getName().substring(0, Math.min(14, event.getEntity().getName().length())), (ItemStack[]) event.getDrops().toArray(new ItemStack[event.getDrops().size()]));
+		//plugin.deathLocations.put(event.getEntity().getName().substring(0, Math.min(14, event.getEntity().getName().length())), event.getEntity().getLocation().getBlock().getLocation());
+		//plugin.deathInventories.put(event.getEntity().getName().substring(0, Math.min(14, event.getEntity().getName().length())), (ItemStack[]) event.getDrops().toArray(new ItemStack[event.getDrops().size()]));
+		plugin.deathLocations.put(event.getEntity().getName(), event.getEntity().getLocation().getBlock().getLocation());
+		plugin.deathInventories.put(event.getEntity().getName(), (ItemStack[]) event.getDrops().toArray(new ItemStack[event.getDrops().size()]));
 		event.getDrops().clear();
 	}
 

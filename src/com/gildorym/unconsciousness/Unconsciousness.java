@@ -13,7 +13,7 @@ public class Unconsciousness extends JavaPlugin {
 	public Map<String, ItemStack[]> deathInventories = new HashMap<String, ItemStack[]>();
 	
 	public void onEnable() {
-		this.registerListeners(new PlayerInteractListener(this), new PlayerRespawnListener(this), new PlayerDeathListener(this));
+		this.registerListeners(new PlayerRespawnListener(this), new PlayerDeathListener(this));
 	}
 	
 	private void registerListeners(Listener... listeners) {
