@@ -20,7 +20,7 @@ public class WakeUpRunnable implements Runnable {
 	public void run() {
 		if (location.getBlock().getType() == Material.BEDROCK) {
 			if (Bukkit.getServer().getPlayer(player) != null) {
-				Bukkit.getServer().getPlayer(player).teleport(location.getBlock().getRelative(BlockFace.UP, 2).getLocation());
+				Bukkit.getServer().getPlayer(player).teleport(location.getBlock().getLocation());
 			}
 			location.getBlock().setType(Material.AIR);
 			location.getBlock().getRelative(BlockFace.UP).setType(Material.AIR);

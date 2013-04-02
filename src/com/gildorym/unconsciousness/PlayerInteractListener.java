@@ -34,7 +34,7 @@ public class PlayerInteractListener implements Listener {
 				Sign sign = (Sign) event.getClickedBlock().getState();
 				if (sign.getLine(0).equals(ChatColor.BLUE + "[Unconscious]")) {
 					if (plugin.getServer().getPlayer(sign.getLine(2)) != null) {
-							plugin.getServer().getPlayer(sign.getLine(2)).teleport(sign.getBlock().getRelative(BlockFace.UP, 2).getLocation());
+							plugin.getServer().getPlayer(sign.getLine(2)).teleport(sign.getBlock().getLocation());
 					}
 					sign.getBlock().setType(Material.AIR);
 					sign.getBlock().getRelative(BlockFace.DOWN).setType(Material.AIR);
