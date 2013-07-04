@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import noppes.mpm.MorePlayerModels;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -15,10 +17,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.comphenix.protocol.Packets;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketContainer;
 import com.gildorymrp.api.plugin.death.GildorymDeathPlugin;
 
 public class GildorymUnconsciousness extends JavaPlugin implements GildorymDeathPlugin {
@@ -26,12 +24,17 @@ public class GildorymUnconsciousness extends JavaPlugin implements GildorymDeath
 	public static final String PREFIX = "" + ChatColor.DARK_BLUE + ChatColor.MAGIC + "|" + ChatColor.RESET + ChatColor.DARK_PURPLE + "GildorymUnconsciousness" + ChatColor.DARK_BLUE + ChatColor.MAGIC + "| " + ChatColor.RESET;
 	private File deathLocationsFile;
 	private YamlConfiguration deathLocations;
+	private File deathTimesFile;
+	private YamlConfiguration deathTimes;
 	private Set<String> unconscious;
+	private MorePlayerModels mpm;
 	
 	@Override
 	public void onEnable() {
+		this.mpm = (MorePlayerModels) this.getServer().getPluginManager().getPlugin("MorePlayerModels");
 		this.deathLocationsFile = new File(this.getDataFolder().getPath() + File.separator + "death-locations.yml");
 		this.deathLocations = new YamlConfiguration();
+		this.deathTimesFile = new File(this.getDataFolder().getPath() + File.separator + "death-times.yml");
 		this.unconscious = new HashSet<String>();
 		if (!this.getDataFolder().exists()) {
 			this.getDataFolder().mkdir();
@@ -43,8 +46,16 @@ public class GildorymUnconsciousness extends JavaPlugin implements GildorymDeath
 				exception.printStackTrace();
 			}
 		}
+		if (!deathTimesFile.exists()) {
+			try {
+				deathTimesFile.createNewFile();
+			} catch (IOException exception) {
+				exception.printStackTrace();
+			}
+		}
 		try {
-			deathLocations.load(this.getDataFolder() + File.separator + "death-locations.yml");
+			deathLocations.load(deathLocationsFile);
+			deathTimes.load(deathTimesFile);
 		} catch (FileNotFoundException exception) {
 			exception.printStackTrace();
 		} catch (IOException exception) {
@@ -56,7 +67,8 @@ public class GildorymUnconsciousness extends JavaPlugin implements GildorymDeath
 				new PlayerRespawnListener(this),
 				new PlayerMoveListener(this),
 				new PlayerInteractEntityListener(this),
-				new EntityDamageListener(this));
+				new EntityDamageListener(this),
+				new PlayerJoinListener(this));
 		this.getCommand("wake").setExecutor(new WakeCommand(this));
 	}
 	
@@ -76,28 +88,39 @@ public class GildorymUnconsciousness extends JavaPlugin implements GildorymDeath
 		setUnconscious(player, false);
 	}
 	
-	public void setUnconscious(final Player player, Boolean unconscious) {
+	public void setUnconscious(final Player player, boolean unconscious) {
 		if (unconscious) {
 			this.unconscious.add(player.getName());
-			ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-			PacketContainer packet = protocolManager.createPacket(Packets.Server.BED);
-			packet.getIntegers()
-			.write(0, player.getEntityId())
-			.write(1, 0)
-			.write(2, player.getLocation().getBlockX())
-			.write(3, player.getLocation().getBlockY())
-			.write(4, player.getLocation().getBlockZ());
 			this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 
 				@Override
 				public void run() {
-					GildorymUnconsciousness.this.setUnconscious(player, false);
+					GildorymUnconsciousness.this.setUnconscious(player.getName(), false);
 				}
 			
 			}, 18000L);
 		} else {
 			this.unconscious.remove(player.getName());
 			removeDeathLocation(player);
+			removeDeathTime(player);
+		}
+	}
+	
+	public void setUnconscious(final String playerName, boolean unconscious) {
+		if (unconscious) {
+			this.unconscious.add(playerName);
+			this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+
+				@Override
+				public void run() {
+					GildorymUnconsciousness.this.setUnconscious(playerName, false);
+				}
+				
+			}, 18000L);
+		} else {
+			this.unconscious.remove(playerName);
+			removeDeathLocation(playerName);
+			removeDeathTime(playerName);
 		}
 	}
 	
@@ -125,6 +148,50 @@ public class GildorymUnconsciousness extends JavaPlugin implements GildorymDeath
 		} catch (IOException exception) {
 			exception.printStackTrace();
 		}
+	}
+	
+	private void removeDeathLocation(String playerName) {
+		deathLocations.set(playerName, null);
+		try {
+			deathLocations.save(deathLocationsFile);
+		} catch (IOException exception) {
+			exception.printStackTrace();
+		}
+	}
+	
+	public long getDeathTime(Player player) {
+		return deathTimes.getLong(player.getName());
+	}
+	
+	public void setDeathTime(Player player) {
+		deathTimes.set(player.getName(), System.currentTimeMillis());
+		try {
+			deathTimes.save(deathTimesFile);
+		} catch (IOException exception) {
+			exception.printStackTrace();
+		}
+	}
+	
+	private void removeDeathTime(Player player) {
+		deathTimes.set(player.getName(), null);
+		try {
+			deathTimes.save(deathTimesFile);
+		} catch (IOException exception) {
+			exception.printStackTrace();
+		}
+	}
+	
+	private void removeDeathTime(String playerName) {
+		deathTimes.set(playerName, null);
+		try {
+			deathTimes.save(deathTimesFile);
+		} catch (IOException exception) {
+			exception.printStackTrace();
+		}
+	}
+	
+	public MorePlayerModels getMorePlayerModels() {
+		return mpm;
 	}
 
 }

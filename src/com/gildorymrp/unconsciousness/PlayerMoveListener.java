@@ -1,16 +1,11 @@
 package com.gildorymrp.unconsciousness;
 
-import java.lang.reflect.InvocationTargetException;
+import noppes.mpm.ModelData;
+import noppes.mpm.MorePlayerModels;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-
-import com.comphenix.protocol.Packets;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketContainer;
 
 public class PlayerMoveListener implements Listener {
 	
@@ -23,21 +18,17 @@ public class PlayerMoveListener implements Listener {
 	public void onPlayerMove(PlayerMoveEvent event) {
 		if (plugin.isUnconscious(event.getPlayer())) {
 			event.setCancelled(true);
-			ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-			PacketContainer packet = protocolManager.createPacket(Packets.Server.BED);
-			packet.getIntegers()
-			.write(0, event.getPlayer().getEntityId())
-			.write(1, 0)
-			.write(2, event.getFrom().getBlockX())
-			.write(3, event.getFrom().getBlockY())
-			.write(4, event.getFrom().getBlockZ());
-			for (Player player : event.getPlayer().getWorld().getPlayers()) {
-				try {
-					protocolManager.sendServerPacket(player, packet);
-				} catch (InvocationTargetException exception) {
-					exception.printStackTrace();
-				}
+			ModelData data = MorePlayerModels.getPlayerData(event.getPlayer().getName());
+			int newState = data.moveState == 2 ? 0 : 2;
+			float rotation = event.getPlayer().getLocation().getYaw();
+			while (rotation < 0.0F) {
+				rotation += 360.0F;
 			}
+			while (rotation > 360.0F) {
+				rotation -= 360.0F;
+			}
+			data.rotation = ((int)((rotation + 45.0F) / 90.0F));
+		    data.setNewState(event.getPlayer(), newState);
 		}
 	}
 
