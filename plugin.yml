@@ -2,3 +2,4 @@ name: GildorymUnconsciousness
 author: Lucariatias
 version: 2.0.0
 main: com.gildorymrp.unconsciousness.GildorymUnconsciousness
+depend: [GildorymAPI, ProtocolLib]
