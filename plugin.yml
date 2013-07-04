@@ -3,3 +3,7 @@ author: Lucariatias
 version: 2.0.0
 main: com.gildorymrp.unconsciousness.GildorymUnconsciousness
 depend: [GildorymAPI, ProtocolLib]
+commands:
+    wake:
+        description: Forcefully wakes a player from unconsciousness
+        usage: /<command> [player]
