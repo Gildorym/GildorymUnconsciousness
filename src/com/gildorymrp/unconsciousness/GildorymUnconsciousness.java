@@ -24,12 +24,15 @@ import com.gildorymrp.api.plugin.death.GildorymDeathPlugin;
 public class GildorymUnconsciousness extends JavaPlugin implements GildorymDeathPlugin {
 	
 	public static final String PREFIX = "" + ChatColor.DARK_BLUE + ChatColor.MAGIC + "|" + ChatColor.RESET + ChatColor.DARK_PURPLE + "GildorymUnconsciousness" + ChatColor.DARK_BLUE + ChatColor.MAGIC + "| " + ChatColor.RESET;
-	private File deathLocationsFile = new File(this.getDataFolder().getPath() + File.separator + "death-locations.yml");
-	private YamlConfiguration deathLocations = new YamlConfiguration();
-	private Set<String> unconscious = new HashSet<String>();
+	private File deathLocationsFile;
+	private YamlConfiguration deathLocations;
+	private Set<String> unconscious;
 	
 	@Override
 	public void onEnable() {
+		this.deathLocationsFile = new File(this.getDataFolder().getPath() + File.separator + "death-locations.yml");
+		this.deathLocations = new YamlConfiguration();
+		this.unconscious = new HashSet<String>();
 		if (!this.getDataFolder().exists()) {
 			this.getDataFolder().mkdir();
 		}
