@@ -3,6 +3,8 @@ package com.gildorymrp.unconsciousness;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class PlayerJoinListener implements Listener {
 	
@@ -14,11 +16,12 @@ public class PlayerJoinListener implements Listener {
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		if (!plugin.isUnconscious(event.getPlayer())) {
-			return;
-		}
-		if (System.currentTimeMillis() - plugin.getDeathTime(event.getPlayer()) >= 12000) {
-			plugin.setUnconscious(event.getPlayer(), false);
+		if (plugin.isUnconscious(event.getPlayer())) {
+			if (System.currentTimeMillis() - plugin.getDeathTime(event.getPlayer()) >= 600000L) { //600000ms = 10min
+				plugin.setUnconscious(event.getPlayer(), false);
+			}
+		} else {
+			event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 0, 0), true);
 		}
 	}
 
