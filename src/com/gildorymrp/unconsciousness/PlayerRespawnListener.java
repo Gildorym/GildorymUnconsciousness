@@ -1,6 +1,7 @@
 package com.gildorymrp.unconsciousness;
 
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffect;
@@ -14,7 +15,7 @@ public class PlayerRespawnListener implements Listener {
 		this.plugin = plugin;
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(final PlayerRespawnEvent event) {
 		event.setRespawnLocation(plugin.getDeathLocation(event.getPlayer()));
 		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -22,6 +23,8 @@ public class PlayerRespawnListener implements Listener {
 			@Override
 			public void run() {
 				event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 0), true);
+				event.getPlayer().getInventory().addItem(plugin.getDeathInventory(event.getPlayer()));
+				plugin.removeDeathInventory(event.getPlayer());
 			}
 			
 		}, 20L);

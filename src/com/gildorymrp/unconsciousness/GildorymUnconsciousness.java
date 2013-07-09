@@ -3,6 +3,8 @@ package com.gildorymrp.unconsciousness;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -24,6 +26,8 @@ public class GildorymUnconsciousness extends JavaPlugin implements GildorymDeath
 	private YamlConfiguration deathLocations;
 	private File deathTimesFile;
 	private YamlConfiguration deathTimes;
+	private File deathInventoriesFile;
+	private YamlConfiguration deathInventories;
 	
 	@Override
 	public void onEnable() {
@@ -32,6 +36,8 @@ public class GildorymUnconsciousness extends JavaPlugin implements GildorymDeath
 		this.deathLocations = new YamlConfiguration();
 		this.deathTimesFile = new File(this.getDataFolder().getPath() + File.separator + "death-times.yml");
 		this.deathTimes = new YamlConfiguration();
+		this.deathInventoriesFile = new File(this.getDataFolder().getPath() + File.separator + "death-inventories.yml");
+		this.deathInventories = new YamlConfiguration();
 		if (!this.getDataFolder().exists()) {
 			this.getDataFolder().mkdir();
 		}
@@ -49,9 +55,17 @@ public class GildorymUnconsciousness extends JavaPlugin implements GildorymDeath
 				exception.printStackTrace();
 			}
 		}
+		if (!deathInventoriesFile.exists()) {
+			try {
+				deathInventoriesFile.createNewFile();
+			} catch (IOException exception) {
+				exception.printStackTrace();
+			}
+		}
 		try {
 			deathLocations.load(deathLocationsFile);
 			deathTimes.load(deathTimesFile);
+			deathInventories.load(deathInventoriesFile);
 		} catch (FileNotFoundException exception) {
 			exception.printStackTrace();
 		} catch (IOException exception) {
@@ -77,7 +91,25 @@ public class GildorymUnconsciousness extends JavaPlugin implements GildorymDeath
 
 	@Override
 	public ItemStack[] getDeathInventory(Player player) {
-		return player.getInventory().getContents();
+		return deathInventories.getList(player.getName()).toArray(new ItemStack[0]);
+	}
+	
+	public void setDeathInventory(Player player, List<ItemStack> inventoryContents) {
+		deathInventories.set(player.getName(), inventoryContents);
+		try {
+			deathInventories.save(deathInventoriesFile);
+		} catch (IOException exception) {
+			exception.printStackTrace();
+		}
+	}
+	
+	public void removeDeathInventory(Player player) {
+		deathInventories.set(player.getName(), null);
+		try {
+			deathInventories.save(deathInventoriesFile);
+		} catch (IOException exception) {
+			exception.printStackTrace();
+		}
 	}
 
 	@Override
