@@ -79,7 +79,8 @@ public class GildorymUnconsciousness extends JavaPlugin implements GildorymDeath
 				new PlayerInteractEntityListener(this),
 				new EntityDamageListener(this),
 				new PlayerJoinListener(this),
-				new PlayerInteractListener(this));
+				new PlayerInteractListener(this),
+				new EntityDamageByEntityListener(this));
 		this.getCommand("wake").setExecutor(new WakeCommand(this));
 	}
 	
