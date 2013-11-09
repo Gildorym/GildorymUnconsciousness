@@ -16,7 +16,7 @@ public class WakeCommand implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (sender.hasPermission("gildorym.unconsciousness.command.wake")) {
+		if (sender.hasPermission("gildorym.command.wake")) {
 			Player player = null;
 			if (sender instanceof Player) {
 				player = (Player) sender;
