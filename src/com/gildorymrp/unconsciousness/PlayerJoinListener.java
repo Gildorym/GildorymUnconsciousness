@@ -19,10 +19,9 @@ public class PlayerJoinListener implements Listener {
 		if (plugin.isUnconscious(event.getPlayer())) {
 			if (System.currentTimeMillis() - plugin.getDeathTime(event.getPlayer()) >= 600000L) { //600000ms = 10min
 				plugin.setUnconscious(event.getPlayer(), false);
+			}else{
+				
 			}
-		} else {
-			event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 0, 0), true);
-		}
 	}
 
 }

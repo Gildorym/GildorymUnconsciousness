@@ -23,8 +23,9 @@ public class PlayerRespawnListener implements Listener {
 			@Override
 			public void run() {
 				event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 0), true);
-				event.getPlayer().getInventory().addItem(plugin.getDeathInventory(event.getPlayer()));
-				plugin.removeDeathInventory(event.getPlayer());
+				event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, Integer.MAX_VALUE), true);
+				event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, Integer.MAX_VALUE, Integer.MAX_VALUE), true);
+				event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, -100), true);
 			}
 			
 		}, 20L);

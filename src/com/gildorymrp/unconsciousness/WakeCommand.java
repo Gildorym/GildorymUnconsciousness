@@ -16,7 +16,7 @@ public class WakeCommand implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (sender.hasPermission("gildorym.unconsciousness.command.wake")) {
+		if (sender.hasPermission("gildorym.command.wake")) {
 			Player player = null;
 			if (sender instanceof Player) {
 				player = (Player) sender;
@@ -25,14 +25,14 @@ public class WakeCommand implements CommandExecutor {
 				if (plugin.getServer().getPlayer(args[0]) != null) {
 					player = Bukkit.getServer().getPlayer(args[0]);
 				} else {
-					sender.sendMessage(GildorymUnconsciousness.PREFIX + "Could not find a player by that name, defaulting to self.");
+					sender.sendMessage("GildorymUnconsiousness: Could not find a player by that name, defaulting to self.");
 				}
 			}
 			if (player != null) {
 				plugin.setUnconscious(player, false);
-				sender.sendMessage(GildorymUnconsciousness.PREFIX + "Forcefully woke " + player.getDisplayName());
+				sender.sendMessage("GildorymUnconsiousness: Forcefully woke " + player.getDisplayName());
 			} else {
-				sender.sendMessage(GildorymUnconsciousness.PREFIX + "You must specify a player to wake");
+				sender.sendMessage("GildorymUnconsiousness: You must specify a player to wake");
 			}
 		}
 		return true;

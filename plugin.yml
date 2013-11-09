@@ -8,6 +8,6 @@ commands:
         description: Forcefully wakes a player from unconsciousness
         usage: /<command> [player]
 permissions:
-    gildorym.unconsciousness.command.wake:
+    gildorym.command.wake:
         description: Allows you to forcefully wake players
         default: op
