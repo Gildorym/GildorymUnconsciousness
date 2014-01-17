@@ -3,6 +3,7 @@ package com.gildorymrp.unconsciousness;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -167,6 +168,24 @@ public class GildorymUnconsciousness extends JavaPlugin {
 		} catch (IOException exception) {
 			exception.printStackTrace();
 		}
+	}
+	
+	static Location getClosestLocation(Location playerLocation, Map<String, Location> locationSet) {
+		Location closestLocation = null;
+		double minDistance = Double.MAX_VALUE;
+		for (Location location : locationSet.values()) {
+			try {
+				if (playerLocation.distance(location) < minDistance) {
+					minDistance = playerLocation.distance(location);
+					closestLocation = location;
+				}
+			} catch (IllegalArgumentException ex) {
+				
+			} catch (NullPointerException ex) {
+				
+			}
+		}
+		return closestLocation;
 	}
 
 }
