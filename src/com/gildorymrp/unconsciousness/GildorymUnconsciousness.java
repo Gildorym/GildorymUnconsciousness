@@ -23,6 +23,8 @@ public class GildorymUnconsciousness extends JavaPlugin {
 	private YamlConfiguration deathLocations;
 	private File deathTimesFile;
 	private YamlConfiguration deathTimes;
+	public Map<String, Integer[]> locationMap;
+	public Map<String, String> messageMap;
 	
 	@Override
 	public void onEnable() {
@@ -170,14 +172,14 @@ public class GildorymUnconsciousness extends JavaPlugin {
 		}
 	}
 	
-	static Location getClosestLocation(Location playerLocation, Map<String, Location> locationSet) {
-		Location closestLocation = null;
+	static Integer[] getClosestLocation(Location playerLocation, Map<String,Integer[]> locationMap) {
+		Integer[] closestLocation = null;
 		double minDistance = Double.MAX_VALUE;
-		for (Location location : locationSet.values()) {
+		for (Integer[] coords : locationMap.values()) {
 			try {
-				if (playerLocation.distance(location) < minDistance) {
-					minDistance = playerLocation.distance(location);
-					closestLocation = location;
+				if (calculateDistance(playerLocation, coords) < minDistance) {
+					minDistance = calculateDistance(playerLocation, coords);
+					closestLocation = coords;
 				}
 			} catch (IllegalArgumentException ex) {
 				
@@ -186,6 +188,12 @@ public class GildorymUnconsciousness extends JavaPlugin {
 			}
 		}
 		return closestLocation;
+	}
+	
+	static double calculateDistance(Location playerLocation, Integer[] coords) {
+		return Math.sqrt( Math.pow((coords[0] - playerLocation.getX()), 2) +
+				Math.pow((coords[1] - playerLocation.getY()), 2) +
+				Math.pow((coords[2] - playerLocation.getZ()), 2));
 	}
 
 }
