@@ -10,6 +10,8 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 public class SerializableLocation implements ConfigurationSerializable, Serializable {
 	
+	//TODO: Use this to translate locations from the config into actual locations and find the closest one. 
+	
 	private static final long serialVersionUID = 1721511236574072962L;
 	private int x;
 	private int y;
