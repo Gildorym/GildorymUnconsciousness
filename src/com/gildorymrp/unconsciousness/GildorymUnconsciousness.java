@@ -20,17 +20,19 @@ public class GildorymUnconsciousness extends JavaPlugin {
 	
 	public static final String PREFIX = "" + ChatColor.DARK_BLUE + ChatColor.MAGIC + "|" + ChatColor.RESET + ChatColor.DARK_PURPLE + "GildorymUnconsciousness" + ChatColor.DARK_BLUE + ChatColor.MAGIC + "| " + ChatColor.RESET;
 	private File deathLocationsFile;
+	private File respawnLocationsFile;
 	private YamlConfiguration deathLocations;
+	private YamlConfiguration respawnLocations;
 	private File deathTimesFile;
 	private YamlConfiguration deathTimes;
-	public Map<String, Integer[]> locationMap;
-	public Map<String, String> messageMap;
 	
 	@Override
 	public void onEnable() {
 		ConfigurationSerialization.registerClass(SerializableLocation.class);
 		this.deathLocationsFile = new File(this.getDataFolder().getPath() + File.separator + "death-locations.yml");
 		this.deathLocations = new YamlConfiguration();
+		this.respawnLocationsFile = new File(this.getDataFolder().getPath() + File.separator + "respawn-locations.yml");
+		this.respawnLocations = new YamlConfiguration();
 		this.deathTimesFile = new File(this.getDataFolder().getPath() + File.separator + "death-times.yml");
 		this.deathTimes = new YamlConfiguration();
 		if (!this.getDataFolder().exists()) {
@@ -50,8 +52,16 @@ public class GildorymUnconsciousness extends JavaPlugin {
 				exception.printStackTrace();
 			}
 		}
+		if (!respawnLocationsFile.exists()) {
+			try {
+				respawnLocationsFile.createNewFile();
+			} catch (IOException exception) {
+				exception.printStackTrace();
+			}
+		}
 		try {
 			deathLocations.load(deathLocationsFile);
+			respawnLocations.load(respawnLocationsFile);
 			deathTimes.load(deathTimesFile);
 		} catch (FileNotFoundException exception) {
 			exception.printStackTrace();
@@ -172,28 +182,17 @@ public class GildorymUnconsciousness extends JavaPlugin {
 		}
 	}
 	
-	static Integer[] getClosestLocation(Location playerLocation, Map<String,Integer[]> locationMap) {
-		Integer[] closestLocation = null;
+	public String getClosestRespawnLocationName(Location playerLocation) {
+		String closestLocation = null;
 		double minDistance = Double.MAX_VALUE;
-		for (Integer[] coords : locationMap.values()) {
-			try {
-				if (calculateDistance(playerLocation, coords) < minDistance) {
-					minDistance = calculateDistance(playerLocation, coords);
-					closestLocation = coords;
-				}
-			} catch (IllegalArgumentException ex) {
-				
-			} catch (NullPointerException ex) {
-				
+		for (String locationName : respawnLocations.getKeys(false)) {
+			Location respawnLocation = ((SerializableLocation) respawnLocations.get(locationName)).toLocation();
+			if (playerLocation.getWorld() == respawnLocation.getWorld() && playerLocation.distance(respawnLocation) < minDistance) {
+				closestLocation = locationName;
+				minDistance = playerLocation.distance(respawnLocation);
 			}
 		}
 		return closestLocation;
-	}
-	
-	static double calculateDistance(Location playerLocation, Integer[] coords) {
-		return Math.sqrt( Math.pow((coords[0] - playerLocation.getX()), 2) +
-				Math.pow((coords[1] - playerLocation.getY()), 2) +
-				Math.pow((coords[2] - playerLocation.getZ()), 2));
 	}
 
 }
