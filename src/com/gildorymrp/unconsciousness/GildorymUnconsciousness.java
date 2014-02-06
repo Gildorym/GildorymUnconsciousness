@@ -3,7 +3,6 @@ package com.gildorymrp.unconsciousness;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -18,12 +17,14 @@ import org.bukkit.potion.PotionEffectType;
 
 public class GildorymUnconsciousness extends JavaPlugin {
 	
-	public static final String PREFIX = "" + ChatColor.DARK_BLUE + ChatColor.MAGIC + "|" + ChatColor.RESET + ChatColor.DARK_PURPLE + "GildorymUnconsciousness" + ChatColor.DARK_BLUE + ChatColor.MAGIC + "| " + ChatColor.RESET;
+	public static final String PREFIX = "" + ChatColor.DARK_BLUE + "[" + ChatColor.RESET + ChatColor.DARK_PURPLE + "GildorymUnconsciousness" + ChatColor.DARK_BLUE + "] " + ChatColor.RESET;
 	private File deathLocationsFile;
 	private File respawnLocationsFile;
+	//private File revivalQueueFile;
+	private File deathTimesFile;
+	//private YamlConfiguration revivalQueue;
 	private YamlConfiguration deathLocations;
 	private YamlConfiguration respawnLocations;
-	private File deathTimesFile;
 	private YamlConfiguration deathTimes;
 	
 	@Override
